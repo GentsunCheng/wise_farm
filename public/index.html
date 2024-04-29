@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmer's Land</title>
+    <script src="javascripts/real.js"></script>
+</head>
+<style>
+    @import "stylesheets/style.css";
+</style>
+<body>
+<div class="container_data">
+    <h1>实时数据</h1>
+    <h2>温度</h2>
+    <canvas id="temp" class="fluent-canvas"></canvas>
+    <h2>二氧化碳</h2>
+    <canvas id="co2" class="fluent-canvas"></canvas>
+    <h2>光照强度</h2>
+    <canvas id="light" class="fluent-canvas"></canvas>
+</div>
+<div class="container_button">
+    <button id="control" class="fluent-button" onclick="window.location.href = '/control.html'">设备控制</button>
+    <button id="history" class="fluent-button" onclick="window.location.href = '/history.html'">历史数据</button>
+</div>
+</body>
