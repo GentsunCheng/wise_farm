@@ -90,7 +90,7 @@ function updateData(newData, type) {
     ctx.lineWidth = 1;
     for (let i = 0; i < data.length; i++) {
         const x = canvas.width - 10 - (data.length - i - 1) * 20; // 横坐标
-        const y = canvas.height - 10 - (data[i] - 0) * (canvas.height - 20) / 50; // 纵坐标
+        const y = canvas.height - scale - (data[i] - 0) * (canvas.height - 2 * scale) / (5 * scale); // 纵坐标
         if (i === 0) {
             ctx.moveTo(x, y);
         } else {
