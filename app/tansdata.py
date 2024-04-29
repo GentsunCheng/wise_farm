@@ -12,8 +12,8 @@ async def handle_client(websocket, path):
         while True:
             data = {
                 "temperature": random.randint(0, 30),
-                "co2": random.randint(0, 30),
-                "light": random.randint(0, 30)
+                "co2": random.randint(0, 500),
+                "light": random.randint(0, 100)
             }
             message = json.dumps(data)
             print(f"Sending message: {message}")

@@ -50,7 +50,7 @@ function updateData(newData, type) {
             datas.temp.shift(); // 移除最旧的数据
         }
     } else if (type === 'co2') {
-        scale = 1;
+        scale = 100;
         unit = 'ppm';
         datas.co2.push(newData);
         data = datas.co2;
