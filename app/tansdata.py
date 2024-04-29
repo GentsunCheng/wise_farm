@@ -2,13 +2,21 @@ import asyncio
 import websockets
 import threading
 import time
+import json
 
+import random
 
 async def handle_client(websocket, path):
     print(f"Client connected: {websocket.remote_address}")
     try:
         while True:
-            message = "Hello from server!"  # 要发送的消息
+            data = {
+                "temperature": random.randint(0, 30),
+                "co2": random.randint(0, 30),
+                "light": random.randint(0, 30)
+            }
+            message = json.dumps(data)
+            print(f"Sending message: {message}")
             await websocket.send(message)
             await asyncio.sleep(1)  # 每秒发送一次消息
     except websockets.exceptions.ConnectionClosedError:

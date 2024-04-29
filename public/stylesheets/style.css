@@ -19,7 +19,7 @@ a {
   left: 0;
   top: 0;
   height: 100%; /* 让容器铺满整个页面高度 */
-  width: 60%; /* 容器宽度占页面宽度的50% */
+  width: 60%; /* 容器宽度占页面宽度的60% */
   overflow-y: auto; /* 如果内容超过容器高度，显示滚动条 */
   padding: 20px; /* 可根据需要进行调整 */
   box-sizing: border-box; /* 内外边距不会增加容器尺寸 */
@@ -30,7 +30,7 @@ a {
   right: 0;
   top: 0;
   height: 100%; /* 让容器铺满整个页面高度 */
-  width: 40%; /* 容器宽度占页面宽度的50% */
+  width: 40%; /* 容器宽度占页面宽度的40% */
   display: flex; /* 使用 Flexbox 布局 */
   flex-direction: column; /* 垂直方向排列 */
   justify-content: center; /* 纵向居中 */
@@ -42,7 +42,7 @@ a {
 
 .fluent-canvas {
   border-radius: 16px; /* 圆角 */
-  height: calc(25% - 12px); /* 占父容器高度的1/3，减去16px的内边距 */
+  height: calc(26% - 16px); /* 占父容器高度的1/3，减去16px的内边距 */
   width: 100%; /* 宽度和父容器相同 */
   background-color: #ffffff; /* 白色背景 */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 浅色阴影 */
@@ -91,7 +91,6 @@ a {
   opacity: 0.85; /* 点击时恢复默认透明度 */
   transform: none; /* 点击时取消位置偏移 */
 }
-
 
 .fluent-button:active {
   background-color: #005A9E;
