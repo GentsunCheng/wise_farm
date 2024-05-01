@@ -3,19 +3,24 @@ import websockets
 import threading
 import time
 import json
+import vf_gpio
+from collections import namedtuple
 
-import random
+
+gpio = vf_gpio.gpio_mn()
+data = gpio.SensorData(temp=0, co2=0, light=0)
 
 async def handle_client(websocket, path):
     print(f"Client connected: {websocket.remote_address}")
     try:
         while True:
-            data = {
-                "temperature": random.randint(0, 30),
-                "co2": random.randint(0, 500),
-                "light": random.randint(0, 100)
+            data = gpio.read()
+            json_data = {
+                "temperature": data.temp,
+                "co2": data.co2,
+                "light": data.light,
             }
-            message = json.dumps(data)
+            message = json.dumps(json_data)
             print(f"Sending message: {message}")
             await websocket.send(message)
             await asyncio.sleep(1)  # 每秒发送一次消息
