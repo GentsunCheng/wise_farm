@@ -6,11 +6,13 @@ class gpio_mn():
         self.SensorData = namedtuple('SensorData', ['temp', 'co2', 'light'])
         self.data = self.SensorData(temp=0, co2=0, light=0)
         self.delay = 0.5
+        self.th = threading.Thread()
 
     def __get_gpio__(self):
+        print("server is running")
         return None
 
-    def loop_gpio(self, frequent = 2):
+    def gpio_server(self, frequent = 2):
         '''
         用于循环读取gpio数据，在单独线程中执行
         :param frequent: gpio读取频率 hz 最高200
@@ -23,7 +25,8 @@ class gpio_mn():
         elif frequent < 1:
             frequent = 1
         self.delay = 1 / frequent
-        th = threading.Thread(target=self.__get_gpio__)
+        self.th = threading.Thread(target=self.__get_gpio__)
+        self.th.start()
 
         return None
 
@@ -34,14 +37,17 @@ class gpio_mn():
         :type types: str
         :return: float | dict
         '''
-        match types:
-            case "temp":
-                return self.data.temp
-            case "co2":
-                return self.data.co2
-            case "light":
-                return self.data.light
-            case _:
-                return self.data
+        if self.th.isAlive():
+            match types:
+                case "temp":
+                    return self.data.temp
+                case "co2":
+                    return self.data.co2
+                case "light":
+                    return self.data.light
+                case _:
+                    return self.data
 
-        return None
+        else:
+            return None
+

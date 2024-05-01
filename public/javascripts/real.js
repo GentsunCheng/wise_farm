@@ -6,7 +6,7 @@ let datas = {
     'co2': [],
     'light': []
 }
-
+let job = true;
 
 // 当连接建立时
 socket.addEventListener('open', function (event) {
@@ -16,6 +16,14 @@ socket.addEventListener('open', function (event) {
 // 当收到消息时
 socket.addEventListener('message', function (event) {
     console.log('Message from server:', event.data);
+    if (event.data === "down") {
+        const title = document.getElementById("title");
+        title.style.color = "red";
+        job = false;
+    } else if(event.data !== "down" && !job) {
+        const title = document.getElementById("title");
+        title.style.color = null;
+    }
     const data = JSON.parse(event.data);
     const { temperature, co2, light } = data;
     const temperatureData = parseInt(temperature);

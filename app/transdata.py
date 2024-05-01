@@ -8,21 +8,25 @@ from collections import namedtuple
 
 
 gpio = vf_gpio.gpio_mn()
-data = gpio.SensorData(temp=0, co2=0, light=0)
 
 async def handle_client(websocket, path):
     print(f"Client connected: {websocket.remote_address}")
     try:
         while True:
             data = gpio.read()
-            json_data = {
-                "temperature": data.temp,
-                "co2": data.co2,
-                "light": data.light,
-            }
-            message = json.dumps(json_data)
-            print(f"Sending message: {message}")
-            await websocket.send(message)
+            if data:
+                json_data = {
+                    "temperature": data.temp,
+                    "co2": data.co2,
+                    "light": data.light,
+                }
+                message = json.dumps(json_data)
+                print(f"Sending message: {message}")
+                await websocket.send(message)
+            else:
+                print("gpio server is down")
+                message = "down"
+                await  websocket.send(message)
             await asyncio.sleep(1)  # 每秒发送一次消息
     except websockets.exceptions.ConnectionClosedError:
         print(f"Client disconnected: {websocket.remote_address}")
