@@ -4,7 +4,6 @@ import threading
 import time
 import json
 import vf_gpio
-from collections import namedtuple
 
 
 gpio = vf_gpio.gpio_mn()
@@ -43,6 +42,7 @@ def start_websocket_server():
 
 
 if __name__ == '__main__':
+    gpio.gpio_server("start", 10)
     # 启动WebSocket服务器
     thread = threading.Thread(target=start_websocket_server)
     thread.start()

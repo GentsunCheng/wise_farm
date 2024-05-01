@@ -1,4 +1,4 @@
-const socket = new WebSocket('ws://localhost:8765'); // 请替换成你的 WebSocket 服务器地址
+const socket = new WebSocket('ws://{{ip}}:8765'); // 请替换成你的 WebSocket 服务器地址
 
 // 定义温度数据数组
 let datas = {
@@ -19,10 +19,12 @@ socket.addEventListener('message', function (event) {
     if (event.data === "down") {
         const title = document.getElementById("title");
         title.style.color = "red";
+        title.textContent = "实时数据(服务未启动)";
         job = false;
     } else if(event.data !== "down" && !job) {
         const title = document.getElementById("title");
         title.style.color = null;
+        title.textContent = "实时数据";
     }
     const data = JSON.parse(event.data);
     const { temperature, co2, light } = data;
