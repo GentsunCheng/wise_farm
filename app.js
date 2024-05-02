@@ -18,7 +18,7 @@ function getServerIP() {
   // 遍历网络接口
   for (const interfaceName in interfaces) {
     // 如果是以 eth 开头的接口名（通常是 Ethernet 接口）
-    if (interfaceName.startsWith('WLAN') || interfaceName.startsWith('eth')) {
+    if (interfaceName.startsWith('WLAN') || interfaceName.startsWith('eth') || interfaceName.startsWith('end')) {
       const interfaceInfo = interfaces[interfaceName];
       // 遍历接口的详细信息
       for (const interfaceDetail of interfaceInfo) {

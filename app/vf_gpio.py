@@ -3,6 +3,7 @@ import pymysql
 import datetime
 import threading
 import sorfcom
+import periphery
 
 import random
 
@@ -12,6 +13,12 @@ class SensorData:
         self.temp = temp
         self.co2 = co2
         self.light = light
+
+class LED:
+    def __init__(self, r, g, b):
+        self.r = r
+        self.g = g
+        self.b = b
 
 class gpio_mn():
     def __init__(self):
@@ -26,6 +33,10 @@ class gpio_mn():
         self.conn = None
         self.cursor = None
         self.__conn_db__()
+
+        self.ad7705 = periphery.SPI("/dev/spidev0.0", 4915200, 0)
+        self.sgp30 = periphery.I2C("/dev/i2c-1", 0x58)
+        self.gpio = LED(r=periphery.GPIO("/dev/gpiochip0", 42, "out"), g=periphery.GPIO("/dev/gpiochip0", 43, "out"), b=periphery.GPIO("/dev/gpiochip0", 47, "out"))
 
     def __del__(self):
         self.cursor.close()
