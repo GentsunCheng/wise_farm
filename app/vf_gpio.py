@@ -22,7 +22,7 @@ class gpio_mn():
         self.record_time = datetime.datetime.now()
         self.th = threading.Thread(target=self.__get_gpio__)
         self.td = threading.Thread(target=self.__write_db__)
-        self.event = threading.Event()
+        self.wait_write = True
         self.conn = None
         self.cursor = None
         self.__conn_db__()
@@ -62,10 +62,10 @@ class gpio_mn():
             if old_time.minute > 56:
                 current_minute = current_minute + 60
             if current_minute - old_time.minute >= 3:
-                self.record_time = old_time.replace(minute = ((old_time.minute + current_minute) // 2))
-                old_time.replace(minute = current_minute)
+                self.record_time = old_time
+                old_time = current_time
                 if self.td.is_alive():
-                    self.event.set()
+                    self.wait_write = False
             time.sleep(self.delay)
         print("gpio server stopped!")
         self.td.join()
@@ -88,7 +88,8 @@ class gpio_mn():
                 print("创建失败失败:", e)
         print("data server started!")
         while self.runing:
-            self.event.wait()
+            while self.wait_write:
+                time.sleep(1)
             tmp_list = []
             tmp_list.append(self.record_time.strftime('%Y-%m-%d %H:%M'))
             for i in range(3):
@@ -107,7 +108,7 @@ class gpio_mn():
                 self.conn.rollback()
                 print("数据插入失败:", e)
             self.datas.clear()
-            self.event.clear()
+            self.wait_write = True
         self.__clos_db__()
         print("data server stopped!")
 
