@@ -37,7 +37,7 @@ app.set('view engine', 'pug');
 
 app.use((req, res, next) => {
   console.log(req.originalUrl)
-  if (req.originalUrl === '/javascripts/real.js' || '/javascripts/history.js' || 'javascripts/control.js') { // 检查请求路径
+  if (req.originalUrl === '/javascripts/real.js' || req.originalUrl === '/javascripts/history.js' || req.originalUrl === 'javascripts/control.js') { // 检查请求路径
     // 读取替换内容
     const filePath = path.join(__dirname, 'public' + req.originalUrl);
     let fileContent = fs.readFileSync(filePath, 'utf8');

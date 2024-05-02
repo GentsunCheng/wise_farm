@@ -3,17 +3,22 @@ import pymysql
 import datetime
 import threading
 import sorfcom
-from collections import namedtuple
 
 import random
 
+
+class SensorData:
+    def __init__(self, temp=0, co2=0, light=0):
+        self.temp = temp
+        self.co2 = co2
+        self.light = light
+
 class gpio_mn():
     def __init__(self):
-        self.SensorData = namedtuple('SensorData', ['temp', 'co2', 'light'])
-        self.data = self.SensorData(temp=0, co2=0, light=0)
+        self.data = SensorData(temp=0, co2=0, light=0)
         self.datas = []
         self.delay = 0.5
-        self.run = False
+        self.runing = False
         self.record_time = datetime.datetime.now()
         self.th = threading.Thread(target=self.__get_gpio__)
         self.td = threading.Thread(target=self.__write_db__)
@@ -25,7 +30,7 @@ class gpio_mn():
     def __del__(self):
         self.cursor.close()
         self.conn.close()
-        self.run = False
+        self.runing = False
 
     def __conn_db__(self):
         self.conn = pymysql.connect(
@@ -46,39 +51,35 @@ class gpio_mn():
         old_time = datetime.datetime.now()
         self.record_time = old_time
         old_minute = old_time.minute
+        print("gpio server started!")
         self.td.start()
-        while self.run:
-            print("server is running")
+        while self.runing:
             self.data.temp = random.randint(0,30)
             self.data.co2 = random.randint(0,500)
             self.data.light = random.randint(0,100)
-            self.datas.append(self.data)
+            self.datas.append([self.data.temp, self.data.co2, self.data.light])
             current_time = datetime.datetime.now()
             current_minute = current_time.minute
-            if old_time > 56:
+            if old_time.minute > 56:
                 current_minute = current_minute + 60
             if current_minute - old_minute >= 3:
                 old_time = current_time
-                self.record_time = old_time.replace(minute = (old_minute + current_minute) // 2)
+                self.record_time = old_time.replace(minute = ((old_minute + current_minute) // 2))
                 if self.td.is_alive():
                     self.event.set()
             time.sleep(self.delay)
+        print("gpio server stopped!")
         self.td.join()
         return None
 
     def __write_db__(self):
         self.__conn_db__()
-        table_name = self.record_time.strftime('%Y-%m-%d')
-        if table_exists(self.cursor, table_name):
+        table_name = self.record_time.strftime('data%Y%m%d')
+        self.cursor.execute("SHOW TABLES LIKE %s", (table_name,))
+        if self.cursor.fetchone():
             print(f"表 '{table_name}' 存在")
         else:
-            sql = ("CREATE TABLE " + table_name + " (time DATETIME, temp FLOAT,"
-                "co2 FLOAT,"
-                "light FLOAT,"
-                "CONSTRAINT check_temp CHECK (temp >= -256 AND temp <= 255),"
-                "CONSTRAINT check_co2 CHECK (co2 >= 0 AND co2 <= 500),"
-                "CONSTRAINT check_light CHECK (light >= 0 AND light <= 100)"
-                ")")
+            sql = "create table " + table_name + "(time DATETIME, temp FLOAT, co2 FLOAT, light FLOAT)"
             try:
                 self.cursor.execute(sql)
                 self.conn.commit()
@@ -87,7 +88,8 @@ class gpio_mn():
                 self.conn.rollback()
                 print("创建失败失败:", e)
         self.__clos_db__()
-        while self.run:
+        print("data server started!")
+        while self.runing:
             self.event.wait()
             self.__conn_db__()
             tmp_list = []
@@ -95,9 +97,9 @@ class gpio_mn():
             for i in range(3):
                 tmp = 0
                 for j in self.datas:
-                    tmp = tmp + self.datas[j][i]
+                    tmp = tmp + j[i]
                 tmp_list.append(tmp)
-            sql = "INSERT INTO your_table (time, temp, co2, light) VALUES (%s, %s, %s, %s)"
+            sql = "INSERT INTO " + table_name + "(time, temp, co2, light) VALUES (%s, %s, %s, %s)"
             data = tuple(tmp_list)
             tmp_list.clear()
             try:
@@ -110,6 +112,7 @@ class gpio_mn():
             self.__clos_db__()
             self.datas.clear()
             self.event.clear()
+        print("data server stopped!")
 
     def gpio_server(self,cmd="start", frequent = 2):
         '''
@@ -129,12 +132,12 @@ class gpio_mn():
                     frequent = 1
                 self.delay = 1 / frequent
 
-                self.run = True
+                self.runing = True
                 self.th.start()
 
         elif cmd == "stop":
             if self.th.is_alive():
-                self.run = False
+                self.runing = False
                 self.th.join()
             else:
                 print("server is not running!!")

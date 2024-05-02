@@ -5,8 +5,8 @@ import time
 import json
 import vf_gpio
 
-
 gpio = vf_gpio.gpio_mn()
+
 
 async def handle_client(websocket, path):
     print(f"Client connected: {websocket.remote_address}")
@@ -25,7 +25,7 @@ async def handle_client(websocket, path):
             else:
                 print("gpio server is down")
                 message = "down"
-                await  websocket.send(message)
+                await websocket.send(message)
             await asyncio.sleep(1)  # 每秒发送一次消息
     except websockets.exceptions.ConnectionClosedError:
         print(f"Client disconnected: {websocket.remote_address}")
