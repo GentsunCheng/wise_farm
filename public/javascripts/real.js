@@ -1,4 +1,4 @@
-const socket = new WebSocket('wss://{{ip}}:8765'); // 请替换成你的 WebSocket 服务器地址
+const socket = new WebSocket('wss://vf2/ws'); // 请替换成你的 WebSocket 服务器地址
 
 // 定义温度数据数组
 let datas = {
