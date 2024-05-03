@@ -46,5 +46,4 @@ if __name__ == '__main__':
     # 启动WebSocket服务器
     thread = threading.Thread(target=start_websocket_server)
     thread.start()
-    os.chdir('../')
     os.system('npm start')
