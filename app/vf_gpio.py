@@ -34,8 +34,8 @@ class gpio_mn():
         self.cursor = None
         self.__conn_db__()
 
-        self.ad7705 = periphery.SPI("/dev/spidev0.0", 4915200, 0)
-        self.sgp30 = periphery.I2C("/dev/i2c-1", 0x58)
+        self.ad7705 = periphery.SPI("/dev/spidev0.0", 0, 4915200, "msb", 16, 0)
+        self.sgp30 = periphery.I2C("/dev/i2c-0")
         self.gpio = LED(r=periphery.GPIO("/dev/gpiochip0", 42, "out"), g=periphery.GPIO("/dev/gpiochip0", 43, "out"), b=periphery.GPIO("/dev/gpiochip0", 47, "out"))
 
     def __del__(self):
