@@ -1,4 +1,11 @@
-const socket = new WebSocket('wss://vf2/ws'); // 请替换成你的 WebSocket 服务器地址
+let wsurl;
+if (location.protocol === 'https:') {
+    wsurl = `wss://${location.host}/ws`;
+} else {
+    wsurl = `ws://${location.host}/ws`;
+}
+
+const socket = new WebSocket(wsurl); // 请替换成你的 WebSocket 服务器地址
 
 // 定义温度数据数组
 let datas = {
