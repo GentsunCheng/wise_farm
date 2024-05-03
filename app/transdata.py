@@ -2,10 +2,18 @@ import asyncio
 import websockets
 import threading
 import time
+import ssl
+import pathlib
 import json
 import vf_gpio
 
 gpio = vf_gpio.gpio_mn()
+
+cert = '/etc/ssl/www/vf2/vf2.pem'
+privkey = '/etc/ssl/www/vf2/vf2-key.pem'
+
+ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+ssl_context.load_cert_chain(pathlib.Path(cert), pathlib.Path(privkey))
 
 
 async def handle_client(websocket, path):
@@ -32,7 +40,7 @@ async def handle_client(websocket, path):
 
 
 async def start_server():
-    async with websockets.serve(handle_client, None, 8765):
+    async with websockets.serve(handle_client, None, 8765, ssl=ssl_context):
         print("Server started")
         await asyncio.Future()  # Keeps the server running
 
