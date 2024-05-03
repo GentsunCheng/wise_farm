@@ -3,4 +3,4 @@ if [! -d "$(pwd)/node_modules" ]; then
   npm install
 fi
 
-sudo python transdata.py
+sudo python app/transdata.py
