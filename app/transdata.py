@@ -1,8 +1,8 @@
 import asyncio
 import websockets
 import threading
-import time
 import json
+import os
 import vf_gpio
 
 gpio = vf_gpio.gpio_mn()
@@ -46,5 +46,5 @@ if __name__ == '__main__':
     # 启动WebSocket服务器
     thread = threading.Thread(target=start_websocket_server)
     thread.start()
-    while True:
-        time.sleep(3)
+    os.chdir('../')
+    os.system('npm start')
