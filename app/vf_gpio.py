@@ -209,5 +209,5 @@ class gpio_mn():
         else:
             return None
 
-    def write(self):
+    def write(self, *args):
         pass

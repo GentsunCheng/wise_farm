@@ -45,6 +45,11 @@ async def handle_client(websocket, path):
                     dic['light' + str(i)] = str(piece[3])
                     i = i + 1
                 message = json.dumps(data)
+            elif mode == "control":
+                message = await websocket.recv()
+                gpio.write(message)
+            else:
+                print("Invalid mode")
             print(f"Sending message: {message}")
             await websocket.send(message)
             await asyncio.sleep(1)  # 每秒发送一次消息
