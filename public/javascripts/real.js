@@ -17,6 +17,7 @@ let job = true;
 
 // 当连接建立时
 socket.addEventListener('open', function (event) {
+    socket.send("real");
     console.log('Connected to server');
 });
 
