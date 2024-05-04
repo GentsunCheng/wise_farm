@@ -3,7 +3,7 @@ import pymysql
 import datetime
 import threading
 import sorfcom
-import periphery
+# import periphery
 
 import random
 
@@ -30,13 +30,14 @@ class gpio_mn():
         self.th = threading.Thread(target=self.__get_gpio__)
         self.td = threading.Thread(target=self.__write_db__)
         self.wait_write = True
+        self.read_history_lock = False
         self.conn = None
         self.cursor = None
         self.__conn_db__()
 
-        self.ad7705 = periphery.SPI("/dev/spidev0.0", 0, 4915200, "msb", 16, 0)
-        self.sgp30 = periphery.I2C("/dev/i2c-0")
-        self.gpio = LED(r=periphery.GPIO("/dev/gpiochip0", 42, "out"), g=periphery.GPIO("/dev/gpiochip0", 43, "out"), b=periphery.GPIO("/dev/gpiochip0", 47, "out"))
+        # self.ad7705 = periphery.SPI("/dev/spidev0.0", 0, 4915200, "msb", 16, 0)
+        # self.sgp30 = periphery.I2C("/dev/i2c-0")
+        # self.gpio = LED(r=periphery.GPIO("/dev/gpiochip0", 42, "out"), g=periphery.GPIO("/dev/gpiochip0", 43, "out"), b=periphery.GPIO("/dev/gpiochip0", 47, "out"))
 
     def __del__(self):
         self.cursor.close()
@@ -99,7 +100,7 @@ class gpio_mn():
                 print("创建失败失败:", e)
         print("data server started!")
         while self.runing:
-            while self.wait_write:
+            while self.wait_write or self.read_history_lock:
                 time.sleep(1)
             tmp_list = []
             tmp_list.append(self.record_time.strftime('%Y-%m-%d %H:%M'))
@@ -107,6 +108,7 @@ class gpio_mn():
                 tmp = 0
                 for j in self.datas:
                     tmp = tmp + j[i]
+                tmp = tmp /len(self.datas)
                 tmp_list.append(tmp)
             sql = "INSERT INTO " + table_name + "(time, temp, co2, light) VALUES (%s, %s, %s, %s)"
             data = tuple(tmp_list)
@@ -150,9 +152,42 @@ class gpio_mn():
                 self.th.join()
             else:
                 print("server is not running!!")
-
-
         return None
+
+    def history(self, type="general", table=None):
+        '''
+        获取历史数据
+        :param type: 获取数据类型, 可选"general" "detail"
+        :type type: str
+        :param table: 数据表名
+        :type table: str
+        :return: list
+        '''
+
+        while not self.wait_write:
+            time.sleep(1)
+        if type == "detail" and table is None:
+            return None
+
+        self.read_history_lock = True
+        self.__conn_db__()
+        if type == "general":
+            sql = "show tables"
+        elif type == "detail":
+            sql = "select * from " + table
+        else:
+            return None
+
+        try:
+            self.cursor.execute(sql)
+            data = self.cursor.fetchall()
+        except Exception as e:
+            print(e)
+            return None
+
+        self.__clos_db__()
+        self.read_history_lock = False
+        return data
 
     def read(self, types="all"):
         '''
@@ -171,6 +206,8 @@ class gpio_mn():
                     return self.data.light
                 case _:
                     return self.data
-
         else:
             return None
+
+    def write(self):
+        pass
