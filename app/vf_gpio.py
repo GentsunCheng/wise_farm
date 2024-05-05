@@ -8,21 +8,21 @@ import sorfcom
 import random
 
 
-class SensorData:
-    def __init__(self, temp=0, co2=0, light=0):
-        self.temp = temp
-        self.co2 = co2
-        self.light = light
-
-class LED:
-    def __init__(self, r, g, b):
-        self.r = r
-        self.g = g
-        self.b = b
-
 class gpio_mn():
+    class __SensorData__:
+        def __init__(self, temp=0, co2=0, light=0):
+            self.temp = temp
+            self.co2 = co2
+            self.light = light
+
+    class __LED__:
+        def __init__(self, r, g, b):
+            self.r = r
+            self.g = g
+            self.b = b
+
     def __init__(self):
-        self.data = SensorData(temp=0, co2=0, light=0)
+        self.data = self.__SensorData__(temp=0, co2=0, light=0)
         self.datas = []
         self.delay = 0.5
         self.runing = False
@@ -37,7 +37,7 @@ class gpio_mn():
 
         # self.ad7705 = periphery.SPI("/dev/spidev0.0", 0, 4915200, "msb", 16, 0)
         # self.sgp30 = periphery.I2C("/dev/i2c-0")
-        # self.gpio = LED(r=periphery.GPIO("/dev/gpiochip0", 42, "out"), g=periphery.GPIO("/dev/gpiochip0", 43, "out"), b=periphery.GPIO("/dev/gpiochip0", 47, "out"))
+        # self.gpio = self.__LED__(r=periphery.GPIO("/dev/gpiochip0", 42, "out"), g=periphery.GPIO("/dev/gpiochip0", 43, "out"), b=periphery.GPIO("/dev/gpiochip0", 47, "out"))
 
     def __del__(self):
         self.cursor.close()
