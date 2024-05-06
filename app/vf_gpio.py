@@ -51,7 +51,7 @@ class gpio_mn():
             time.sleep(0.1)
             msgs = [self.i2c.Message([0x00, 0x00, 0x00, 0x00], read=True)]
             self.i2c.transfer(self.addr, msgs)
-            return int(msgs[0].data[0]) << 4 | int(msgs[0].data[1]), int(msgs[0].data[2]) << 4 | int(msgs[0].data[3])
+            return int(msgs[0].data[0]) << 8 | int(msgs[0].data[1]), int(msgs[0].data[2]) << 8 | int(msgs[0].data[3])
 
 
     def __init__(self):
@@ -66,6 +66,7 @@ class gpio_mn():
         self.read_history_lock = False
         self.conn = None
         self.cursor = None
+        self.sgp30 = self.__sgp30__()
         self.__conn_db__()
 
         # self.ad7705 = periphery.SPI("/dev/spidev0.0", 0, 4915200, "msb", 16, 0)
@@ -99,6 +100,8 @@ class gpio_mn():
         self.td.start()
         while self.runing:
             self.data.temp = random.randint(0,30)
+            if self.sgp30.stat:
+                self.data.co2, _ = self.sgp30.read()
             self.data.co2 = random.randint(0,500)
             self.data.light = random.randint(0,100)
             self.datas.append([self.data.temp, self.data.co2, self.data.light])
