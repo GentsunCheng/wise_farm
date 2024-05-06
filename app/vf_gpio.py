@@ -102,7 +102,6 @@ class gpio_mn():
             self.data.temp = random.randint(0,30)
             if self.sgp30.stat:
                 self.data.co2, _ = self.sgp30.read()
-            self.data.co2 = random.randint(0,500)
             self.data.light = random.randint(0,100)
             self.datas.append([self.data.temp, self.data.co2, self.data.light])
             current_time = datetime.datetime.now()
