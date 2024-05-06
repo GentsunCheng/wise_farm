@@ -3,7 +3,7 @@ import pymysql
 import datetime
 import threading
 import sorfcom
-# import periphery
+import periphery
 
 import random
 
@@ -20,6 +20,28 @@ class gpio_mn():
             self.r = r
             self.g = g
             self.b = b
+
+    class __sgp30__:
+        def __init__(self):
+            self.addr = 0x58
+            self.i2c = periphery.I2C("/dev/i2c-0")
+
+            msgs = [self.i2c.Message([0x20, 0x03])]
+            self.i2c.transfer(self.addr, msgs)
+            print("please wait 15s for sgp30 init")
+
+        def read(self):
+            '''
+            获取sgp30数据, 初始化至少15秒使用
+            返回co2, tvoc
+            :return: int, int
+            '''
+            msgs = [self.i2c.Message([0x20, 0x08])]
+            self.i2c.transfer(self.addr, msgs)
+            msgs = [self.i2c.Message([0x00, 0x00, 0x00, 0x00], read=True)]
+            self.i2c.transfer(self.addr, msgs)
+            return int(msgs[0].data[0]) << 4 | int(msgs[0].data[1]), int(msgs[0].data[2]) << 4 | int(msgs[0].data[3])
+
 
     def __init__(self):
         self.data = self.__SensorData__(temp=0, co2=0, light=0)
