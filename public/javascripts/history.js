@@ -29,12 +29,9 @@ function createTable(data) {
     const th1 = document.createElement('th');
     th1.textContent = '表名';
     const th2 = document.createElement('th');
-    th2.textContent = '数据';
-    const th3 = document.createElement('th');
-    th3.textContent = '操作';
+    th2.textContent = '日期';
     headerRow.appendChild(th1);
     headerRow.appendChild(th2);
-    headerRow.appendChild(th3);
     thead.appendChild(headerRow);
     table.appendChild(thead);
 
@@ -53,24 +50,23 @@ function createTable(data) {
             if (match) {
                 dateString = match[1]; // 提取日期部分
             }
-            const cell2 = document.createElement('td');
-            cell2.textContent = dateString;
 
             // 创建按钮并绑定点击事件
             const button = document.createElement('button');
+            button.classList.add('fluent-button');
             button.textContent = dateString; // 按钮文本是日期字符串
+
             button.addEventListener('click', function() {
                 detail(value); // 点击按钮执行 detail 函数，并传入相应参数
             });
 
             // 将按钮添加到单元格中
-            const cell3 = document.createElement('td');
-            cell3.appendChild(button);
+            const cell2 = document.createElement('td');
+            cell2.appendChild(button);
 
             // 将单元格添加到行中
             row.appendChild(cell1);
             row.appendChild(cell2);
-            row.appendChild(cell3);
 
             // 将行添加到 tbody 中
             tbody.appendChild(row);
