@@ -5,7 +5,7 @@ if (location.protocol === 'https:') {
     wsurl = `ws://${location.host}/ws`;
 }
 
-const socket = new WebSocket(wsurl); // 请替换成你的 WebSocket 服务器地址
+const socket = new WebSocket(wsurl);
 
 // 定义温度数据数组
 let datas = {

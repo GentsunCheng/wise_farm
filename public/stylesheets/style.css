@@ -74,13 +74,13 @@ a {
   color: #ffffff;
   margin-bottom: 16px; /* 设置按钮之间的垂直间距 */
   transition: background-color 0.3s, box-shadow 0.3s, opacity 0.3s, transform 0.3s; /* 添加透明度和位置偏移的过渡效果 */
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   opacity: 0.85; /* 默认透明度 */
 }
 
 .fluent-button:hover {
   background: linear-gradient(to bottom, #005A9E, #706FD3, #FFB6C1); /* 悬浮时蓝色、紫色、粉色渐变背景 */
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   opacity: 0.7; /* 悬浮时透明度 */
   transform: translateY(-2px); /* 悬浮时向上移动2像素 */
 }

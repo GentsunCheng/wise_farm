@@ -1,0 +1,52 @@
+@font-face {
+    font-family: 'CircularBody';
+    src: url('../assets/CircularBody.woff') format('woff');
+    /* 可以添加其他格式的字体，以备万一 */
+}
+
+.main {
+    position: fixed;
+    top: 65px; /* 从顶部往下50px开始 */
+    left: 0;
+    width: 100%;
+    bottom: 0;
+}
+
+.fluent-button {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 24px;
+    font-weight: bold;
+    font-family: 'CircularBody', sans-serif;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    border-radius: 16px;
+    background: linear-gradient(to bottom, #0078D4, #8C9EFF, #FFD3E0); /* 蓝色、紫色、粉色渐变背景 */
+    color: #ffffff;
+    margin-bottom: 16px; /* 设置按钮之间的垂直间距 */
+    transition: background-color 0.3s, box-shadow 0.3s, opacity 0.3s, transform 0.3s; /* 添加透明度和位置偏移的过渡效果 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    opacity: 0.85; /* 默认透明度 */
+    height: 50px;
+}
+
+.fluent-button:hover {
+    background: linear-gradient(to bottom, #005A9E, #706FD3, #FFB6C1); /* 悬浮时蓝色、紫色、粉色渐变背景 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    opacity: 0.7; /* 悬浮时透明度 */
+    transform: translateY(-2px); /* 悬浮时向上移动2像素 */
+}
+
+.fluent-button:active {
+    background: linear-gradient(to bottom, #0078D4, #8C9EFF, #FFD3E0); /* 点击时恢复默认渐变背景 */
+    box-shadow: none;
+    opacity: 0.85; /* 点击时恢复默认透明度 */
+    transform: none; /* 点击时取消位置偏移 */
+}
+
+.fluent-button:active {
+    background-color: #005A9E;
+    box-shadow: none;
+}
