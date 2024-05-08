@@ -46,9 +46,27 @@ function createTable(data) {
             cell2.textContent = value;
             row.appendChild(cell1);
             row.appendChild(cell2);
+
+            // 创建按钮并绑定点击事件
+            const button = document.createElement('button');
+            button.textContent = key; // 按钮文本内容是日期
+            button.addEventListener('click', function() {
+                detail(value); // 点击按钮执行 detail 函数，并传入相应参数
+            });
+
+            // 将按钮添加到单元格中
+            const cell3 = document.createElement('td');
+            cell3.appendChild(button);
+            row.appendChild(cell3);
+
             tbody.appendChild(row);
         }
     }
     table.appendChild(tbody);
     mainDiv.appendChild(table);
+}
+
+function detail(data) {
+    console.log('Detail function executed with data:', data);
+    // 在这里执行 detail 函数的具体操作，data 是传入的参数，即格式为 "data20xxxxxx" 的字符串
 }
