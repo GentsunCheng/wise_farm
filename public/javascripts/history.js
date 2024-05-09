@@ -57,6 +57,7 @@ function createTable(data) {
             button.textContent = dateString; // 按钮文本是日期字符串
 
             button.addEventListener('click', function() {
+                socket.close();
                 detail(value); // 点击按钮执行 detail 函数，并传入相应参数
             });
 
@@ -79,8 +80,15 @@ function createTable(data) {
 }
 
 function detail(data) {
-    socket.send("ditail");
-    socket.send(data);
+    const detail_socket = new WebSocket(wsurl);
+    detail_socket.addEventListener('open', function (event) {
+        detail_socket.send(data);
+        console.log('Connected to server(detail)');
+    });
+    detail_socket.addEventListener('message', function (event) {
+        console.log('Message from server:', event.data);
+    });
+    detail_socket.close();
     const mainDiv = document.querySelector('.main');
     mainDiv.innerHTML = '';
     const table = document.createElement('table');
@@ -102,12 +110,7 @@ function detail(data) {
     thead.appendChild(tr);
     table.appendChild(thead);
     mainDiv.appendChild(table);
-    const detail_socket = new WebSocket(wsurl);
-    detail_socket.addEventListener('message', function (event) {
-        data = JSON.parse(event.data);
-        console.log(data);
-    })
-    socket.close();
+
     const back_button = document.getElementById("back");
     back_button.onclick = () => { location.reload(); };
 }
