@@ -50,10 +50,10 @@ async def handle_client(websocket, path):
             data = gpio.history("detail", table)
             print(f"after return: {data}")
             for piece in data:
-                dic['time' + str(i)] = str(piece[0])
-                dic['temp' + str(i)] = str(piece[1])
-                dic['co2' + str(i)] = str(piece[2])
-                dic['light' + str(i)] = str(piece[3])
+                dic['time' + str(i)] = piece[0].strftime('%Y-%m-%d %H:%M:%S')
+                dic['temp' + str(i)] = piece[1]
+                dic['co2' + str(i)] = piece[2]
+                dic['light' + str(i)] = piece[3]
                 i = i + 1
             message = json.dumps(data)
             print(f"Sending message: {message}")
