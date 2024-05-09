@@ -102,10 +102,11 @@ function detail(data) {
     thead.appendChild(tr);
     table.appendChild(thead);
     mainDiv.appendChild(table);
-    socket.addEventListener('message', function (event) {
-        console.log('Message from server:', event.data);
+    const detail_socket = new WebSocket(wsurl);
+    detail_socket.addEventListener('message', function (event) {
+        data = JSON.parse(event.data);
+        console.log(data);
     })
-    console.log()
     socket.close();
     const back_button = document.getElementById("back");
     back_button.onclick = () => { location.reload(); };
