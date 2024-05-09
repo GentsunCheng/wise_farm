@@ -25,8 +25,12 @@ async def handle_client(websocket, path):
                 else:
                     message = "down"
                 print(f"Sending message: {message}")
-                await websocket.send(message)
-                await asyncio.sleep(1)  # 每秒发送一次消息
+                try:
+                    await websocket.send(message)
+                    await asyncio.sleep(1)  # 每秒发送一次消息
+                except websockets.exceptions.ConnectionClosedError:
+                    break
+                print(f"Client disconnected: {websocket.remote_address}")
 
         elif mode == "history":
             data = gpio.history("general")
