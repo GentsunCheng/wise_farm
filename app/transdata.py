@@ -36,23 +36,23 @@ async def handle_client(websocket, path):
                 i = i + 1
             message = json.dumps(dic)
             await websocket.send(message)
-            await websocket.close()
+            mode = await websocket.recv()
 
-        elif mode == "detail":
-            dic = {}
-            i = 0
-            table = await websocket.recv()
-            # data = ((datetime.datetime(2024, 5, 2, 16, 55), 18733.0, 323360.0, 64161.0), ...)
-            data = gpio.history("detail", table)
-            for piece in data:
-                dic['time' + str(i)] = str(piece[0])
-                dic['temp' + str(i)] = str(piece[1])
-                dic['co2' + str(i)] = str(piece[2])
-                dic['light' + str(i)] = str(piece[3])
-                i = i + 1
-            message = json.dumps(data)
-            await websocket.send(message)
-            await websocket.close()
+            if mode == "detail":
+                dic = {}
+                i = 0
+                table = await websocket.recv()
+                # data = ((datetime.datetime(2024, 5, 2, 16, 55), 18733.0, 323360.0, 64161.0), ...)
+                data = gpio.history("detail", table)
+                for piece in data:
+                    dic['time' + str(i)] = str(piece[0])
+                    dic['temp' + str(i)] = str(piece[1])
+                    dic['co2' + str(i)] = str(piece[2])
+                    dic['light' + str(i)] = str(piece[3])
+                    i = i + 1
+                message = json.dumps(data)
+                await websocket.send(message)
+                await websocket.close()
 
         elif mode == "control":
             while True:

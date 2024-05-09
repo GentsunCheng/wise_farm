@@ -2,7 +2,6 @@ import time
 import pymysql
 import datetime
 import threading
-import sorfcom
 import periphery
 
 import random

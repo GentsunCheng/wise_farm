@@ -27,7 +27,7 @@ function createTable(data) {
     // 创建表头
     const headerRow = document.createElement('tr');
     const th1 = document.createElement('th');
-    th1.textContent = '表名';
+    th1.textContent = '编号';
     const th2 = document.createElement('th');
     th2.textContent = '日期';
     headerRow.appendChild(th1);
@@ -79,6 +79,30 @@ function createTable(data) {
 }
 
 function detail(data) {
-    console.log('Detail function executed with data:', data);
-    // 在这里执行 detail 函数的具体操作，data 是传入的参数
+    socket.send("ditail");
+    socket.send(data);
+    const mainDiv = document.querySelector('.main');
+    mainDiv.innerHTML = '';
+    const table = document.createElement('table');
+    const thead = document.createElement('thead');
+    const tbody = document.createElement('tbody');
+    const tr = document.createElement('tr');
+    const th1 = document.createElement('th');
+    th1.textContent = '时间';
+    const th2 = document.createElement('th');
+    th2.textContent = '温度';
+    const th3 = document.createElement('th');
+    th3.textContent = 'CO2';
+    const th4 = document.createElement('th');
+    th4.textContent = '光照';
+    tr.appendChild(th1);
+    tr.appendChild(th2);
+    tr.appendChild(th3);
+    tr.appendChild(th4);
+    thead.appendChild(tr);
+    table.appendChild(thead);
+    mainDiv.appendChild(table);
+    socket.close();
+    const back_button = document.getElementById("back");
+    back_button.onclick = () => { location.reload(); };
 }
