@@ -7,7 +7,7 @@ import periphery
 import random
 
 
-class gpio_mn():
+class gpio_mn:
     class __SensorData__:
         def __init__(self, temp=0, co2=0, light=0):
             self.temp = temp
@@ -38,11 +38,11 @@ class gpio_mn():
             self.stat = True
 
         def read(self):
-            '''
+            """
             获取sgp30数据, 初始化至少15秒使用
             返回co2, tvoc
             :return: int, int
-            '''
+            """
             while not self.stat:
                 time.sleep(1)
             msgs = [self.i2c.Message([0x20, 0x08])]
@@ -52,12 +52,11 @@ class gpio_mn():
             self.i2c.transfer(self.addr, msgs)
             return int(msgs[0].data[0]) << 8 | int(msgs[0].data[1]), int(msgs[0].data[2]) << 8 | int(msgs[0].data[3])
 
-
     def __init__(self):
         self.data = self.__SensorData__(temp=0, co2=0, light=0)
         self.datas = []
         self.delay = 0.5
-        self.runing = False
+        self.running = False
         self.record_time = datetime.datetime.now()
         self.th = threading.Thread(target=self.__get_gpio__)
         self.td = threading.Thread(target=self.__write_db__)
@@ -71,7 +70,7 @@ class gpio_mn():
     def __del__(self):
         self.cursor.close()
         self.conn.close()
-        self.runing = False
+        self.running = False
 
     def __conn_db__(self):
         self.conn = pymysql.connect(
@@ -93,11 +92,11 @@ class gpio_mn():
         self.record_time = old_time
         print("gpio server started!")
         self.td.start()
-        while self.runing:
-            self.data.temp = random.randint(0,30)
+        while self.running:
+            self.data.temp = random.randint(0, 30)
             if self.sgp30.stat:
                 self.data.co2, _ = self.sgp30.read()
-            self.data.light = random.randint(0,100)
+            self.data.light = random.randint(0, 100)
             self.datas.append([self.data.temp, self.data.co2, self.data.light])
             current_time = datetime.datetime.now()
             current_minute = current_time.minute
@@ -129,16 +128,15 @@ class gpio_mn():
                 self.conn.rollback()
                 print("创建失败失败:", e)
         print("data server started!")
-        while self.runing:
+        while self.running:
             while self.wait_write or self.read_history_lock:
                 time.sleep(1)
-            tmp_list = []
-            tmp_list.append(self.record_time.strftime('%Y-%m-%d %H:%M'))
+            tmp_list = [self.record_time.strftime('%Y-%m-%d %H:%M')]
             for i in range(3):
                 tmp = 0
                 for j in self.datas:
                     tmp = tmp + j[i]
-                tmp = tmp /len(self.datas)
+                tmp = tmp / len(self.datas)
                 tmp_list.append(tmp)
             sql = "INSERT INTO " + table_name + "(time, temp, co2, light) VALUES (%s, %s, %s, %s)"
             data = tuple(tmp_list)
@@ -155,13 +153,14 @@ class gpio_mn():
         self.__clos_db__()
         print("data server stopped!")
 
-    def gpio_server(self,cmd="start", frequent = 2):
-        '''
+    def gpio_server(self, cmd="start", frequent=2):
+        """
         用于循环读取gpio数据，在单独线程中执行
+        :param cmd: 控制命令, 可选"start" "stop"
         :param frequent: gpio读取频率 hz 最高200
         :type frequent: int
         :return: None
-        '''
+        """
 
         if cmd == "start":
             if self.th.is_alive():
@@ -173,37 +172,37 @@ class gpio_mn():
                     frequent = 1
                 self.delay = 1 / frequent
 
-                self.runing = True
+                self.running = True
                 self.th.start()
 
         elif cmd == "stop":
             if self.th.is_alive():
-                self.runing = False
+                self.running = False
                 self.th.join()
             else:
                 print("server is not running!!")
         return None
 
-    def history(self, type="general", table=None):
-        '''
+    def history(self, dat_type="general", table=None):
+        """
         获取历史数据
-        :param type: 获取数据类型, 可选"general" "detail"
-        :type type: str
+        :param dat_type: 获取数据类型, 可选"general" "detail"
+        :type dat_type: str
         :param table: 数据表名
         :type table: str
         :return: list
-        '''
+        """
 
         while not self.wait_write:
             time.sleep(1)
-        if type == "detail" and table is None:
+        if dat_type == "detail" and table is None:
             return None
 
         self.read_history_lock = True
         self.__conn_db__()
-        if type == "general":
+        if dat_type == "general":
             sql = "show tables"
-        elif type == "detail":
+        elif dat_type == "detail":
             sql = "select * from " + table
         else:
             return None
@@ -220,12 +219,12 @@ class gpio_mn():
         return data
 
     def read(self, types="all"):
-        '''
+        """
         获取gpio数据
         :param types: 获取数据类型, 可选"all" "temp" "co2" "light"
         :type types: str
         :return: float | dict
-        '''
+        """
         if self.th.is_alive():
             match types:
                 case "temp":
