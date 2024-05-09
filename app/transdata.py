@@ -1,4 +1,6 @@
 import asyncio
+from typing import Dict, Any
+
 import websockets
 import threading
 import json
@@ -46,14 +48,12 @@ async def handle_client(websocket, path):
             dic = {}
             i = 0
             table = mode
-            # data = ((datetime.datetime(2024, 5, 2, 16, 55), 18733.0, 323360.0, 64161.0), ...)
             data = gpio.history("detail", table)
             print(f"after return: {data}")
             for piece in data:
+                dic_tmp = {'temp' + str(i): piece[1], 'co2' + str(i): piece[2], 'light' + str(i): piece[3]}
                 dic['time' + str(i)] = piece[0].strftime('%Y-%m-%d %H:%M:%S')
-                dic['temp' + str(i)] = piece[1]
-                dic['co2' + str(i)] = piece[2]
-                dic['light' + str(i)] = piece[3]
+                dic['data' + str(i)] = dic_tmp
                 i = i + 1
             print(f"dic: {dic}")
             message = json.dumps(dic)
