@@ -88,8 +88,9 @@ function detail(data) {
     detail_socket.addEventListener('message', function (event) {
         console.log('Message from server:', event.data);
         const data = JSON.parse(event.data);
+        detail_socket.close();
     });
-    detail_socket.close()
+
 
     const mainDiv = document.querySelector('.main');
     mainDiv.innerHTML = '';
