@@ -44,6 +44,7 @@ async def handle_client(websocket, path):
             table = mode
             # data = ((datetime.datetime(2024, 5, 2, 16, 55), 18733.0, 323360.0, 64161.0), ...)
             data = gpio.history("detail", table)
+            print(f"after return: {data}")
             for piece in data:
                 dic['time' + str(i)] = str(piece[0])
                 dic['temp' + str(i)] = str(piece[1])

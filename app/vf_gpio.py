@@ -216,6 +216,7 @@ class gpio_mn:
 
         self.__clos_db__()
         self.read_history_lock = False
+        print(f"before return: {data}")
         return data
 
     def read(self, types="all"):
