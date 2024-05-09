@@ -51,6 +51,7 @@ async def handle_client(websocket, path):
                     dic['light' + str(i)] = str(piece[3])
                     i = i + 1
                 message = json.dumps(data)
+                print(f"Sending message: {message}")
                 await websocket.send(message)
                 await websocket.close()
 
