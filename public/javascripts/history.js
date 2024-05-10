@@ -80,6 +80,7 @@ function createTable(data) {
 }
 
 function detail(data) {
+    let detail_data = {};
     const detail_socket = new WebSocket(wsurl);
     detail_socket.addEventListener('open', function (event) {
         detail_socket.send(data);
@@ -87,7 +88,7 @@ function detail(data) {
     });
     detail_socket.addEventListener('message', function (event) {
         console.log('Message from server:', event.data);
-        const data = JSON.parse(event.data);
+        detail_data = JSON.parse(event.data);
         detail_socket.close();
     });
 
@@ -112,6 +113,37 @@ function detail(data) {
     tr.appendChild(th4);
     thead.appendChild(tr);
     table.appendChild(thead);
+    mainDiv.appendChild(table);
+
+    for (const timestamp in detail_data) {
+        if (detail_data.hasOwnProperty(timestamp)) {
+            const rowData = detail_data[timestamp];
+            const row = document.createElement('tr');
+
+            // 创建单元格并设置时间戳
+            const timeCell = document.createElement('td');
+            timeCell.textContent = timestamp;
+            row.appendChild(timeCell);
+
+            // 遍历该时间戳下的数据
+            for (const key in rowData) {
+                if (rowData.hasOwnProperty(key)) {
+                    // 创建单元格并设置数据值
+                    const valueCell = document.createElement('td');
+                    valueCell.textContent = rowData[key];
+                    row.appendChild(valueCell);
+                }
+            }
+
+            // 将行添加到表体中
+            tbody.appendChild(row);
+        }
+    }
+
+    // 将表体添加到表格中
+    table.appendChild(tbody);
+
+    // 将表格添加到主容器中
     mainDiv.appendChild(table);
 
     const back_button = document.getElementById("back");
