@@ -21,6 +21,7 @@ socket.addEventListener('message', function (event) {
 function createTable(data) {
     const mainDiv = document.querySelector('.main');
     const table = document.createElement('table');
+    table.classList.add('fluent-table');
     const thead = document.createElement('thead');
     const tbody = document.createElement('tbody');
 
@@ -95,12 +96,15 @@ function detail(data) {
         // 创建表格
         createDetailTable(detail_data);
     });
+    const back_button = document.getElementById("back");
+    back_button.onclick = () => { location.reload(); };
 }
 
 function createDetailTable(detail_data) {
     const mainDiv = document.querySelector('.main');
     mainDiv.innerHTML = '';
     const table = document.createElement('table');
+    table.classList.add('fluent-table');
     const thead = document.createElement('thead');
     const tbody = document.createElement('tbody');
     const tr = document.createElement('tr');
@@ -139,15 +143,12 @@ function createDetailTable(detail_data) {
                     row.appendChild(valueCell);
                 }
             }
-
             // 将行添加到表体中
             tbody.appendChild(row);
         }
     }
-
     // 将表体添加到表格中
     table.appendChild(tbody);
-
     // 将表格添加到主容器中
     mainDiv.appendChild(table);
 }

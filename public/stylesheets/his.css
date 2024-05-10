@@ -15,7 +15,7 @@
 .fluent-button {
     display: inline-block;
     padding: 10px 20px;
-    font-size: 24px;
+    font-size: 18px;
     font-weight: bold;
     font-family: 'CircularBody', sans-serif;
     text-align: center;
@@ -49,4 +49,34 @@
 .fluent-button:active {
     background-color: #005A9E;
     box-shadow: none;
+}
+
+.fluent-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.fluent-table th,
+.fluent-table td {
+    border: 1px solid #dcdcdc;
+    padding: 8px;
+}
+
+.fluent-table th {
+    background-color: #0078D4;
+    color: #ffffff;
+    font-weight: bold;
+}
+
+.fluent-table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.fluent-table tr:hover {
+    background-color: #eaeaea;
+}
+
+.fluent-table th,
+.fluent-table td {
+    transition: background-color 0.3s, color 0.3s;
 }
