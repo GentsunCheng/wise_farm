@@ -80,12 +80,14 @@ class gpio_mn:
             database="wise_farm"
         )
         self.cursor = self.conn.cursor()
+        print("database connected!")
 
     def __clos_db__(self):
         if self.cursor:
             self.cursor.close()
         if self.conn:
             self.conn.close()
+            print("database closed!")
 
     def __get_gpio__(self):
         old_time = datetime.datetime.now()
