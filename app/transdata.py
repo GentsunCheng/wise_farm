@@ -28,9 +28,14 @@ async def handle_client(websocket, path):
                     message = "down"
                 print(f"Sending message: {message}")
                 try:
-                    await websocket.send(message)
-                    await asyncio.sleep(1)  # 每秒发送一次消息
+                    if websocket.open:
+                        await websocket.send(message)
+                    else:
+                        print("Connection closed. Stopping message sending.")
+                        break
+                    await asyncio.sleep(1)
                 except websockets.exceptions.ConnectionClosedError:
+                    print("Connection closed unexpectedly. Stopping message sending.")
                     break
                 print(f"Client disconnected: {websocket.remote_address}")
 
