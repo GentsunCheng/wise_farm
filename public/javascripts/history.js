@@ -80,7 +80,6 @@ function createTable(data) {
 }
 
 function detail(data) {
-    let detail_data = {};
     const detail_socket = new WebSocket(wsurl);
     detail_socket.addEventListener('open', function (event) {
         detail_socket.send(data);
@@ -88,11 +87,17 @@ function detail(data) {
     });
     detail_socket.addEventListener('message', function (event) {
         console.log('Message from server:', event.data);
-        detail_data = JSON.parse(event.data);
+        const detail_data = JSON.parse(event.data);
+
+        // 关闭 WebSocket 连接
         detail_socket.close();
+
+        // 创建表格
+        createDetailTable(detail_data);
     });
+}
 
-
+function createDetailTable(detail_data) {
     const mainDiv = document.querySelector('.main');
     mainDiv.innerHTML = '';
     const table = document.createElement('table');
@@ -145,7 +150,5 @@ function detail(data) {
 
     // 将表格添加到主容器中
     mainDiv.appendChild(table);
-
-    const back_button = document.getElementById("back");
-    back_button.onclick = () => { location.reload(); };
 }
+
