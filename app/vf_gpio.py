@@ -128,6 +128,7 @@ class gpio_mn:
                 self.conn.rollback()
                 print("创建失败失败:", e)
         print("data server started!")
+        self.__clos_db__()
         while self.running:
             while self.wait_write or self.read_history_lock:
                 time.sleep(1)
@@ -141,6 +142,7 @@ class gpio_mn:
             sql = "INSERT INTO " + table_name + "(time, temp, co2, light) VALUES (%s, %s, %s, %s)"
             data = tuple(tmp_list)
             tmp_list.clear()
+            self.__conn_db__()
             try:
                 self.cursor.execute(sql, data)
                 self.conn.commit()
@@ -150,7 +152,7 @@ class gpio_mn:
                 print("数据插入失败:", e)
             self.datas.clear()
             self.wait_write = True
-        self.__clos_db__()
+            self.__clos_db__()
         print("data server stopped!")
 
     def gpio_server(self, cmd="start", frequent=2):
