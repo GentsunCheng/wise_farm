@@ -54,11 +54,13 @@ socket.addEventListener('close', function (event) {
 
 // 更新温度数据的函数
 function updateData(newData, type) {
-    var canvas = document.getElementById(type);
-    var ctx = canvas.getContext('2d');
-    var scale = 10;
-    var unit = '°C';
-    var data = [];
+    let canvas = document.getElementById(type);
+    let ctx = canvas.getContext('2d');
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+    let scale = 10;
+    let unit = '°C';
+    let data = [];
     if (type === 'temp') {
         scale = 10;
         unit = '°C';
