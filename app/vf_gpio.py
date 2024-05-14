@@ -52,6 +52,27 @@ class gpio_mn:
             self.i2c.transfer(self.addr, msgs)
             return int(msgs[0].data[0]) << 8 | int(msgs[0].data[1]), int(msgs[0].data[2]) << 8 | int(msgs[0].data[3])
 
+    class __ads1115__:
+        def __init__(self):
+            self.addr = 0x48
+            self.i2c = periphery.I2C("/dev/i2c-0")
+            self.temp_ch = [0x84, 0x83]
+            self.light_ch = [0xc4, 0x83]
+
+        def read(self, config):
+            # 写入配置寄存器，启动单次转换
+            msgs = [self.i2c.Message([0x00] + config)]
+            self.i2c.transfer(self.addr, msgs)
+            time.sleep(0.01)
+            msgs = [self.i2c.Message([0x00]), self.i2c.Message([0x00, 0x00], read=True)]
+            self.i2c.transfer(self.addr, msgs)
+            result = (msgs[1].data[0] << 8) | msgs[1].data[1]
+            if config == self.temp_ch:
+                result = result * 30 / 32768
+            elif config == self.light_ch:
+                result = result * 100 / 32768
+            return int(result)
+
     def __init__(self):
         self.data = self.__SensorData__(temp=0, co2=0, light=0)
         self.datas = []
@@ -65,6 +86,7 @@ class gpio_mn:
         self.conn = None
         self.cursor = None
         self.sgp30 = self.__sgp30__()
+        self.ads1115 = self.__ads1115__()
         self.__conn_db__()
 
     def __del__(self):
@@ -95,10 +117,10 @@ class gpio_mn:
         print("gpio server started!")
         self.td.start()
         while self.running:
-            self.data.temp = random.randint(0, 30)
+            self.data.temp = self.ads1115.read(self.ads1115.temp_ch)
             if self.sgp30.stat:
                 self.data.co2, _ = self.sgp30.read()
-            self.data.light = random.randint(0, 100)
+            self.data.light = self.ads1115.read(self.ads1115.light_ch)
             self.datas.append([self.data.temp, self.data.co2, self.data.light])
             current_time = datetime.datetime.now()
             current_minute = current_time.minute
