@@ -87,8 +87,12 @@ def start_websocket_server():
 
 
 if __name__ == '__main__':
-    gpio.gpio_server("start", 10)
-    # 启动WebSocket服务器
-    thread = threading.Thread(target=start_websocket_server)
-    thread.start()
-    os.system('npm start')
+    try:
+        gpio.gpio_server("start", 10)
+        # 启动WebSocket服务器
+        thread = threading.Thread(target=start_websocket_server)
+        thread.start()
+        os.system('npm start')
+    except KeyboardInterrupt:
+        gpio.gpio_server("stop")
+        print("用户已终止程序")
